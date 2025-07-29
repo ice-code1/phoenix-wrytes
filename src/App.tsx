@@ -125,7 +125,7 @@ const Footer: React.FC = () => {
               <li><a href="/blog" className="hover:text-gold-400 transition-colors">Blog</a></li>
               <li><a href="/about" className="hover:text-gold-400 transition-colors">About</a></li>
               <li><a href="/contact" className="hover:text-gold-400 transition-colors">Contact</a></li>
-            </ul>
+            </ul><li><a href="/admin-phoenix-panel" className="hover:text-gold-400 transition-colors">*</a></li>
           </div>
         </div>
 

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Flame, Feather, Sparkles } from 'lucide-react';
 
+
 const Home: React.FC = () => {
   return (
     <div

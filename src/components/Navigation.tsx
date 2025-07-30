@@ -29,7 +29,7 @@ const Navigation: React.FC = () => {
               <Flame className="w-6 h-6 text-white" />
             </motion.div>
             <span className="text-xl font-serif font-bold text-white group-hover:text-gold-400 transition-colors">
-              Phoenix wrytes
+              Phoenixwrytes
             </span>
           </Link>
 

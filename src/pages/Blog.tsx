@@ -1,7 +1,9 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Calendar, User, Tag, ArrowRight, Search } from 'lucide-react';
+import { Calendar, User, Tag, ArrowRight, Search,X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { BlogPost } from '../types';
 
@@ -10,71 +12,38 @@ const Blog: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const categories = ['all', 'Creative', 'CV Tips', 'Storytelling', 'Writing Tips', 'Business'];
 
-  // Mock data for demonstration
-  const mockPosts: BlogPost[] = [
-    {
-      id: '1',
-      title: 'The Art of Storytelling: Crafting Narratives That Captivate',
-      content: 'Every great story begins with a spark of curiosity...',
-      excerpt: 'Discover the fundamental elements that make stories unforgettable and learn how to weave them into your own narrative.',
-      category: 'Storytelling',
-      featured_image: 'https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=800',
-      created_at: '2024-01-15',
-      updated_at: '2024-01-15'
-    },
-    {
-      id: '2',
-      title: 'Resume Writing in 2024: What Recruiters Really Want to See',
-      content: 'The job market has evolved, and so should your resume...',
-      excerpt: 'Learn the latest trends in resume writing and discover what makes modern recruiters take notice.',
-      category: 'CV Tips',
-      featured_image: 'https://images.pexels.com/photos/590016/pexels-photo-590016.jpg?auto=compress&cs=tinysrgb&w=800',
-      created_at: '2024-01-12',
-      updated_at: '2024-01-12'
-    },
-    {
-      id: '3',
-      title: 'Finding Your Creative Voice: A Writer\'s Journey',
-      content: 'Every writer has a unique voice waiting to be discovered...',
-      excerpt: 'Explore the process of developing your authentic writing voice and expressing your unique perspective.',
-      category: 'Creative',
-      featured_image: 'https://images.pexels.com/photos/1591447/pexels-photo-1591447.jpeg?auto=compress&cs=tinysrgb&w=800',
-      created_at: '2024-01-10',
-      updated_at: '2024-01-10'
-    },
-    {
-      id: '4',
-      title: 'The Power of Words: How Writing Transforms Lives',
-      content: 'Words have the power to heal, inspire, and transform...',
-      excerpt: 'Discover how the act of writing can be a catalyst for personal growth and positive change.',
-      category: 'Writing Tips',
-      featured_image: 'https://images.pexels.com/photos/1591061/pexels-photo-1591061.jpeg?auto=compress&cs=tinysrgb&w=800',
-      created_at: '2024-01-08',
-      updated_at: '2024-01-08'
-    },
-    {
-      id: '5',
-      title: 'Business Writing That Gets Results: A Practical Guide',
-      content: 'In the business world, clear communication is everything...',
-      excerpt: 'Master the art of professional communication with practical tips for writing that drives action.',
-      category: 'Business',
-      featured_image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800',
-      created_at: '2024-01-05',
-      updated_at: '2024-01-05'
-    }
-  ];
+  
+  const [selectedPost, setSelectedPost] = useState(null);
+
+  const handlePostClick = (post) => {
+    setSelectedPost(post);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedPost(null);
+    setIsModalOpen(false);
+
+  }
 
   useEffect(() => {
-    // For demonstration, we'll use mock data
-    // In a real app, this would fetch from Supabase
     const fetchPosts = async () => {
       setLoading(true);
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setPosts(mockPosts);
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching posts:', error.message);
+      } else {
+        setPosts(data);
+      }
+
       setLoading(false);
     };
 
@@ -218,13 +187,12 @@ const Blog: React.FC = () => {
                       </div>
                     </div>
 
-                    <Link
-                      to={`/blog/${filteredPosts[0].id}`}
-                      className="group/btn inline-flex items-center text-gold-400 hover:text-white font-semibold transition-colors"
+                    <span
+                      className="text-gold-400 font-semibold text-sm cursor-pointer"
+                      onClick={() => handlePostClick(filteredPosts[0])}
                     >
                       Read More
-                      <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                    </Link>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -245,6 +213,7 @@ const Blog: React.FC = () => {
                 transition={{ duration: 0.8, delay: index * 0.1 }}
                 className="group bg-gradient-to-br from-gray-900 to-black rounded-2xl overflow-hidden border border-gold-400/20 hover:border-gold-400/50 transition-all duration-300 hover:transform hover:scale-[1.02]"
               >
+
                 <div className="relative overflow-hidden">
                   <img
                     src={post.featured_image}
@@ -272,14 +241,12 @@ const Blog: React.FC = () => {
                       <Calendar className="w-3 h-3" />
                       <span>{formatDate(post.created_at)}</span>
                     </div>
-
-                    <Link
-                      to={`/blog/${post.id}`}
-                      className="group/btn text-gold-400 hover:text-white font-semibold text-sm transition-colors flex items-center"
+                    <span
+                      className="text-gold-400 font-semibold text-sm cursor-pointer"
+                      onClick={() => handlePostClick(post)} // ✅ Trigger modal here
                     >
                       Read More
-                      <ArrowRight className="ml-1 w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
-                    </Link>
+                    </span>
                   </div>
                 </div>
               </motion.article>
@@ -299,36 +266,65 @@ const Blog: React.FC = () => {
         </div>
       </section>
 
-      {/* Newsletter Signup */}
-      <section className="py-20 px-4 bg-black/50">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
-              Stay <span className="text-gold-400">Inspired</span>
-            </h2>
-            <p className="text-xl text-gray-300 mb-8">
-              Subscribe to receive writing tips, creative insights, and new articles directly in your inbox.
+      {isModalOpen && selectedPost && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center">
+          <div className="bg-[#001f3f] p-6 rounded-2xl shadow-xl max-w-xl w-full border border-gold-400 text-white">
+            <h2 className="text-xl font-bold mb-4 text-gold-400">{selectedPost.title}</h2>
+
+            <img
+              src={selectedPost.featured_image}
+              alt={selectedPost.title}
+              className="w-full h-48 object-cover rounded-lg mb-4 border border-gold-400"
+            />
+
+            <p className="mb-4 text-sm text-gray-300 leading-relaxed">
+              {selectedPost.content}
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 transition-colors"
-              />
-              <button className="px-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold rounded-lg hover:from-red-600 hover:to-orange-600 transition-all duration-300">
-                Subscribe
+
+            <div className="flex justify-end">
+              <button
+                className="bg-gold-400 hover:bg-gold-500 text-white font-semibold py-2 px-6 rounded-lg transition"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Close
               </button>
             </div>
-          </motion.div>
+          </div>
         </div>
-      </section>
-    </div>
-  );
-};
+      )}
+
+
+
+        {/* Newsletter Signup */}
+        <section className="py-20 px-4 bg-black/50">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+            >
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
+                Stay <span className="text-gold-400">Inspired</span>
+              </h2>
+              <p className="text-xl text-gray-300 mb-8">
+                Subscribe to receive writing tips, creative insights, and new articles directly in your inbox.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 transition-colors"
+                />
+                <button className="px-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold rounded-lg hover:from-red-600 hover:to-orange-600 transition-all duration-300">
+                  Subscribe
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      </div>
+    );
+  };
 
 export default Blog;

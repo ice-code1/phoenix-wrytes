@@ -63,8 +63,7 @@ const AdminPanel: React.FC = () => {
 
   useEffect(() => {
     checkUser();
-    setPosts(mockPosts); // Using mock data for demonstration
-    setLoading(false);
+    fetchPosts(); // Fetch from Supabase instead of using mockPosts
   }, []);
 
   const checkUser = async () => {
@@ -92,24 +91,43 @@ const AdminPanel: React.FC = () => {
     setShowLogin(true);
   };
 
+  const fetchPosts = async () => {
+    const { data, error } = await supabase.from('posts').select('*').order('created_at', { ascending: false });
+    if (error) {
+      console.error('Failed to fetch posts:', error.message);
+    } else {
+      setPosts(data || []);
+    }
+  };
+
+
   const handleSavePost = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const newPost: BlogPost = {
-      id: editingPost?.id || Date.now().toString(),
+
+    const newPost = {
       ...postData,
+      updated_at: new Date().toISOString(),
       created_at: editingPost?.created_at || new Date().toISOString(),
-      updated_at: new Date().toISOString()
     };
 
     if (editingPost) {
-      setPosts(posts.map(p => p.id === editingPost.id ? newPost : p));
+      // Update post
+      const { error } = await supabase
+        .from('posts')
+        .update(newPost)
+        .eq('id', editingPost.id);
+
+      if (error) return alert('Update failed: ' + error.message);
     } else {
-      setPosts([newPost, ...posts]);
+      // Insert new post
+      const { error } = await supabase.from('posts').insert([newPost]);
+      if (error) return alert('Insert failed: ' + error.message);
     }
 
     resetEditor();
+    fetchPosts(); // Refresh posts list
   };
+
 
   const handleEditPost = (post: BlogPost) => {
     setEditingPost(post);
@@ -123,11 +141,14 @@ const AdminPanel: React.FC = () => {
     setShowEditor(true);
   };
 
-  const handleDeletePost = (postId: string) => {
+  const handleDeletePost = async (postId: string) => {
     if (confirm('Are you sure you want to delete this post?')) {
-      setPosts(posts.filter(p => p.id !== postId));
+      const { error } = await supabase.from('blogs').delete().eq('id', postId);
+      if (error) return alert('Delete failed: ' + error.message);
+      fetchPosts(); // Refresh list
     }
   };
+
 
   const resetEditor = () => {
     setShowEditor(false);

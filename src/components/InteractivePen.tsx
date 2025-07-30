@@ -62,7 +62,7 @@ const InteractivePen: React.FC = () => {
   const [showPointer, setShowPointer] = useState(true);
 
   useEffect(() => {
-  const timer = setTimeout(() => setShowPointer(false), 3000);
+  const timer = setTimeout(() => setShowPointer(false), 5000);
   return () => clearTimeout(timer);
 }, []);
 

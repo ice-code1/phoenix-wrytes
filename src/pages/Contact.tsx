@@ -12,7 +12,8 @@ import {
   Linkedin,
   Instagram,
   Twitter,
-  CheckCircle
+  CheckCircle,
+  Facebook
 } from 'lucide-react';
 
 interface ContactFormData {
@@ -52,11 +53,11 @@ const Contact: React.FC = () => {
   ];
 
   const budgetRanges = [
-    'Under $500',
-    '$500 - $1,000',
-    '$1,000 - $2,500',
-    '$2,500 - $5,000',
-    '$5,000+',
+    'Under 50,000 NGN',
+    '50,000 - 100,000 NGN',
+    '100,000 - 250,000 NGN',
+    '250,000 - 500,000 NGN',
+    '500,000+ NGN',
     'Let\'s discuss'
   ];
 
@@ -64,19 +65,19 @@ const Contact: React.FC = () => {
     {
       icon: Mail,
       title: 'Email',
-      details: 'hello@phoenixwrytes.com',
+      details: 'pietyndubuisi33@gmail.com',
       description: 'Send me a message anytime'
     },
     {
       icon: Phone,
       title: 'Phone',
       details: '+234 813 505  9946',
-      description: 'Available Mon-Fri, 9AM-6PM EST'
+      description: 'Available Mon-Fri, 9AM-6PM WST'
     },
     {
       icon: MapPin,
       title: 'Location',
-      details: 'New York, NY',
+      details: 'Anambra, Nigeria',
       description: 'Available for remote work globally'
     },
     {
@@ -88,9 +89,8 @@ const Contact: React.FC = () => {
   ];
 
   const socialLinks = [
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Twitter, href: '#', label: 'Twitter' }
+    { icon: Instagram, href: 'https://www.instagram.com/phoe_nixwrytes1?igsh=NDc3cDh0c3J1eGwy', label: 'Instagram' },
+    { icon: Facebook, href: 'https://web.facebook.com/ndubuisi.piety.chichetaram', label: 'Facebook' }
   ];
 
   return (

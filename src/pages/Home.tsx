@@ -81,7 +81,7 @@ const Home: React.FC = () => {
             transition={{ duration: 1, delay: 0.9 }}
             className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed"
           >
-            Welcome to Phoenix wrytes, where words rise from the ashes to create something extraordinary. 
+            Welcome to phoenixwrytes, where words rise from the ashes to create something extraordinary. 
             From storytelling to professional documents, every piece is crafted with passion and precision.
           </motion.p>
 

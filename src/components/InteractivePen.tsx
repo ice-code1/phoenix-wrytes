@@ -59,6 +59,13 @@ const InteractivePen: React.FC = () => {
     return () => window.removeEventListener('resize', updateConstraints);
   }, [x, y]);
 
+  const [showPointer, setShowPointer] = useState(true);
+
+  useEffect(() => {
+  const timer = setTimeout(() => setShowPointer(false), 3000);
+  return () => clearTimeout(timer);
+}, []);
+
   const handleDrag = (event: any, info: any) => {
     const now = Date.now();
     const newTrail: TrailPoint = {
@@ -127,6 +134,19 @@ const InteractivePen: React.FC = () => {
               : 'bg-gradient-to-br from-gray-800 to-black shadow-lg'}
           `}
         >
+          
+        {showPointer && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: -20 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded-md shadow-md pointer-events-none"
+            >
+              Use Me
+            </motion.div>
+          )}
+
           <Pen
             className={`w-6 h-6 transition-colors duration-300 ${
               isFireMode || isDragging ? 'text-white' : 'text-yellow-400'

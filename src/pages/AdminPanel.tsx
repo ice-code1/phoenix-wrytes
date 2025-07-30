@@ -313,14 +313,7 @@ const AdminPanel: React.FC = () => {
                 </p>
 
                 <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => navigate(`/blog/${post.id}`)}
-                    className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                    title="View Post"
-                  >
-                    <Eye className="w-4 h-4" />
-                  </button>
-                  
+
                   <button
                     onClick={() => handleEditPost(post)}
                     className="p-2 bg-gold-600 text-white rounded-lg hover:bg-gold-700 transition-colors"
